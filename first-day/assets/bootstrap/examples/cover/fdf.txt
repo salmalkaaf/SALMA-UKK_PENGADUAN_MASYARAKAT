@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<?php
+// SESSION
+session_start();
+include('../../config/database.php');
+if (empty($_SESSION['username'])) {
+    @header('location:../modul-auth/index.php');
+}
+// CRUD
+if (isset($_POST['edit'])) {
+    $status = $_POST['status'];
+    $nik = $_POST['nik'];
+    $q = mysqli_query($con, "UPDATE `masyarakat` SET verifikasi = '$status' WHERE nik = '$nik'");
+}
+
+if (isset($_POST['hapus'])) {
+    $nik = $_POST['nik'];
+    $q = mysqli_query($con, "DELETE FROM `masyarakat` WHERE nik = '$nik'");
+}
+if (isset($_POST['update'])) {
+    $nikLama = $_POST['nikLama'];
+    $nik = $_POST['nik'];
+    $nama = $_POST['nama'];
+    $username = $_POST['username'];
+    $telp = $_POST['telp'];
+    $password = md5($_POST['password']);
+    if ($password == '') {
+        $q = mysqli_query($con, "UPDATE `masyarakat` SET nik = '$nik', nama = '$nama', username = '$username', telp = '$telp' WHERE nik = '$nikLama'");
+    } else {
+        $q = mysqli_query($con, "UPDATE `masyarakat` SET `password` = '$password', nik = '$nik', nama = '$nama', username = '$username', telp = '$telp' WHERE nik = '$nikLama'");
+    }
+}
+
+?>
+<!-- header -->
+<?php include('../../assets/header.php') ?>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="../../assets/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+        </div>
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <?php include('../../assets/menu.php'); ?>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Main content -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Verifikasi Masyarakat</h3>
+
+                            </div>
+                            <div class="card-body">
+                                <table id="dataTablesNya" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>NIK</th>
+                                            <th>Nama</th>
+                                            <th>Username</th>
+                                            <th>Telp</th>
+                                            <th>Status</th>
+                                            <th>Update</th>
+                                            <th>Hapus</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $q = mysqli_query($con, "SELECT * FROM `masyarakat`");
+                                        $no = 1;
+                                        while ($d = mysqli_fetch_object($q)) { ?>
+                                            <tr>
+                                                <td><?= $no ?></td>
+                                                <td><?= $d->nik ?></td>
+                                                <td><?= $d->nama ?></td>
+                                                <td><?= $d->username ?></td>
+                                                <td><?= $d->telp ?></td>
+                                                <td><?php if ($d->verifikasi == 0) {
+                                                        echo '<form action="" method="post"><input name="nik" type="hidden" value="' . $d->nik . '"><input name="status" type="hidden" value="1"><button name="edit" type="submit" class="btn btn-danger"><i class="fa fa-ban"></i></button></form>';
+                                                    } else {
+                                                        echo '<form action="" method="post"><input name="nik" type="hidden" value="' . $d->nik . '"><input name="status" type="hidden" value="0"><button name="edit" type="submit" class="btn btn-info"><i class="fa fa-check"></i></button></form>';
+                                                    } ?></td>
+                                                <td><button data-toggle="modal" data-target="#modal-xl<?= $d->nik ?>" class="btn btn-success"><i class="fa fa-pen"></i></button></td>
+                                                <td>
+                                                    <form action="" method="post"><input type="hidden" name="nik" value="<?= $d->nik ?>"><button name="hapus" class="btn btn-danger"><i class="fa fa-trash"></i></button></form>
+                                                </td>
+                                            </tr>
+
+                                            <!-- modal start -->
+                                            <div class="modal fade" id="modal-xl<?= $d->nik ?>">
+                                                <div class="modal-dialog modal-xl<?= $d->nik ?>">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Edit Data</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <form action="" method="post">
+                                                            <input type="hidden" name="nikLama" value="<?= $d->nik ?>">
+                                                            <div class="modal-body">
+                                                                <div class="form-group"><label for="nik">Nik</label>
+                                                                    <input class="form-control" type="text" name="nik" value="<?= $d->nik ?>">
+                                                                </div>
+                                                                <div class="form-group"><label for="nama">Nama</label>
+                                                                    <input class="form-control" type="text" name="nama" value="<?= $d->nama ?>">
+                                                                </div>
+                                                                <div class="form-group"><label for="username">Username</label>
+                                                                    <input class="form-control" type="text" name="username" value="<?= $d->username ?>">
+                                                                </div>
+                                                                <div class="form-group"><label for="username">New Password</label>
+                                                                    <input class="form-control" type="password" name="password" value="">
+                                                                </div>
+                                                                <div class="form-group"><label for="username">Telepon</label>
+                                                                    <input class="form-control" type="number" name="telp" value="<?= $d->nik ?>">
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer justify-content-between">
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                <button type="submit" name="update" class="btn btn-primary">Save changes</button>
+                                                            </div>
+                                                    </div>
+                                                    </form>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                            <!-- modal - ends -->
+
+                                        <?php $no++;
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 3.2.0
+            </div>
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+    <?php include('../../assets/footer.php') ?>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+f
+
+ <!-- jQuery -->
+ <script src="../../assets/plugins/jquery/jquery.min.js"></script>
+ <!-- jQuery UI 1.11.4 -->
+ <script src="../../assets/plugins/jquery-ui/jquery-ui.min.js"></script>
+ <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+ <script>
+     $.widget.bridge('uibutton', $.ui.button)
+ </script>
+ <!-- Bootstrap 4 -->
+ <script src="../../assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+ <!-- Sparkline -->
+ <script src="../../assets/plugins/sparklines/sparkline.js"></script>
+ <!-- jQuery Knob Chart -->
+ <script src="../../assets/plugins/jquery-knob/jquery.knob.min.js"></script>
+ <!-- daterangepicker -->
+ <script src="../../assets/plugins/moment/moment.min.js"></script>
+ <script src="../../assets/plugins/daterangepicker/daterangepicker.js"></script>
+ <!-- Tempusdominus Bootstrap 4 -->
+ <script src="../../assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+ <!-- Summernote -->
+ <script src="../../assets/plugins/summernote/summernote-bs4.min.js"></script>
+ <!-- overlayScrollbars -->
+ <script src="../../assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+ <!-- AdminLTE App -->
+ <script src="../../assets/dist/js/adminlte.js"></script>
+ <?php @session_start();
+    if (!empty($_SESSION['username'])) { ?>
+     <!-- DataTables  & Plugins -->
+     <script src="../../assets/plugins/datatables/jquery.dataTables.min.js"></script>
+     <script src="../../assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+     <script src="../../assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+     <script src="../../assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+     <script src="../../assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+     <script src="../../assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+     <script src="../../assets/plugins/jszip/jszip.min.js"></script>
+     <script src="../../assets/plugins/pdfmake/pdfmake.min.js"></script>
+     <script src="../../assets/plugins/pdfmake/vfs_fonts.js"></script>
+     <script src="../../assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+     <script src="../../assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+     <script src="../../assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+     <script>
+         $(function() {
+             $("#dataTablesNya").DataTable({
+                 "responsive": true,
+                 "lengthChange": false,
+                 "autoWidth": false,
+                 "buttons": ["excel", "pdf", "print"]
+             }).buttons().container().appendTo('#dataTablesNya_wrapper .col-md-6:eq(0)');
+             $('#example2').DataTable({
+                 "paging": true,
+                 "lengthChange": false,
+                 "searching": false,
+                 "ordering": true,
+                 "info": true,
+                 "autoWidth": false,
+                 "responsive": true,
+             });
+         });
+     </script>
+ <?php } ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+h
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SISPEMAS</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../assets/plugins/fontawesome-free/css/all.min.css">
+    <?php @session_start();
+    if (!empty($_SESSION['username'])) { ?>
+        <!-- datatables -->
+        <link rel="stylesheet" href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+        <link rel="stylesheet" href="../../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <?php } ?>
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../assets/dist/css/adminlte.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="../../assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+m
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="index3.html" class="brand-link">
+        <img src="../../assets/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">SISPEMAS</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="../../assets/dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block"><?= $_SESSION['username'] ?></a>
+            </div>
+        </div>
+
+
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+                <?php if ($_SESSION['level'] == 'masyarakat') { ?>
+
+                    <li class="nav-item">
+                        <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/latihan-ukk-2023/modul/modul-profile/" class="nav-link">
+                            <i class="nav-icon fas fa-user-circle"></i>
+                            <p>
+                                Profil
+                            </p>
+                        </a>
+                    </li>
+
+                <?php } ?>
+                <li class="nav-item">
+                    <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/latihan-ukk-2023/modul/modul-pengaduan" class="nav-link">
+                        <i class="nav-icon fas fa-exclamation-circle"></i>
+                        <p>
+                            Pengaduan
+                        </p>
+                    </a>
+                </li>
+                <?php if ($_SESSION['level'] == 'admin') { ?>
+                    <li class="nav-item">
+                        <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/latihan-ukk-2023/modul/modul-masyarakat" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                Masyarakat
+                            </p>
+                        </a>
+                    </li>
+
+                <?php } ?>
+                <li class="nav-item">
+                    <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/latihan-ukk-2023/modul/modul-tanggapan" class="nav-link">
+                        <i class="nav-icon fas fa-reply"></i>
+                        <p>
+                            Tanggapan
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/latihan-ukk-2023/modul/modul-petugas" class="nav-link">
+                        <i class="nav-icon fas fa-life-ring"></i>
+                        <p>
+                            Petugas
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/latihan-ukk-2023/modul/modul-auth/logout.php" class="nav-link">
+                        <i class="nav-icon fas fa-lock"></i>
+                        <p>
+                            Logout
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pengaduan
+<?php
+// SESSION
+session_start();
+include('../../config/database.php');
+if (empty($_SESSION['username'])) {
+    @header('location:../modul-auth/index.php');
+} else {
+    if ($_SESSION['level'] == 'masyarakat') {
+        $nik = $_SESSION['nik'];
+    }
+}
+// CRUD
+if (isset($_POST['tambahPengaduan'])) {
+    $isi_laporan = $_POST['isi_laporan'];
+    $tgl = $_POST['tgl_pengaduan'];
+    //upload
+    $ekstensi_diperbolehkan = array('jpg', 'png');
+    $foto = $_FILES['foto']['name'];
+    print_r($foto);
+    $x = explode(".", $foto);
+    $ekstensi = strtolower(end($x));
+    $file_tmp = $_FILES['foto']['tmp_name'];
+    if (!empty($foto)) {
+        if (in_array($ekstensi, $ekstensi_diperbolehkan) === true) {
+            $q = "INSERT INTO `pengaduan`(id_pengaduan, tgl_pengaduan, nik, isi_laporan, foto, `status`) VALUES ('', '$tgl', '$nik', '$isi_laporan', '$foto', '0')";
+            $r = mysqli_query($con, $q);
+            if ($r) {
+                move_uploaded_file($file_tmp, '../../assets/images/masyarakat/' . $foto);
+            }
+        }
+    } else {
+        $q = "INSERT INTO `pengaduan`(id_pengaduan, tgl_pengaduan, nik, isi_laporan, foto, `status`) VALUES ('', '$tgl', '$nik', '$isi_laporan', '', '0')";
+        $r = mysqli_query($con, $q);
+    }
+}
+
+// hapus pengaduan
+if (isset($_POST['hapus'])) {
+    $id_pengaduan = $_POST['id_pengaduan'];
+    if ($id_pengaduan != '') {
+        $q = "SELECT `foto` FROM `pengaduan` WHERE id_pengaduan = $id_pengaduan";
+        $r = mysqli_query($con, $q);
+        $d = mysqli_fetch_object($r);
+        unlink('../../assets/images/masyarakat/' . $d->foto);
+    }
+    $q = "DELETE FROM `pengaduan` WHERE id_pengaduan = $id_pengaduan";
+    $r = mysqli_query($con, $q);
+}
+
+// rubah status pengaduan
+if (isset($_POST['proses_pengaduan'])) {
+    $id_pengaduan = $_POST['id_pengaduan'];
+    $status = $_POST['status'];
+    $q = "UPDATE `pengaduan` SET status = '$status' WHERE id_pengaduan = '$id_pengaduan'";
+    $r = mysqli_query($con, $q);
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- header -->
+<?php include('../../assets/header.php') ?>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="../../assets/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+        </div>
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <?php include('../../assets/menu.php')
+        ?>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Main content -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Pengaduan</h3><br>
+                                <?php if ($_SESSION['level'] == 'masyarakat') { ?>
+
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <button data-toggle="modal" data-target="#modal-lg" class="btn btn-success">buat pengaduan&nbsp;<i class="fa fa-pen"></i></button>
+                                        </div>
+                                    </div>
+
+                                <?php } ?>
+                                <div class="modal fade" id="modal-lg">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                Buat Pengaduan
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="" method="post" enctype="multipart/form-data">
+                                                    <input type="hidden" name="nik" value="">
+                                                    <div class="form-group">
+                                                        <label for="isi_laporan">Isi Laporan</label>
+                                                        <textarea name="isi_laporan" class="form-control" cols="30" rows="10"></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="tgl_pengaduan">Tanggal Pengaduan</label>
+                                                        <input type="date" name="tgl_pengaduan" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="foto">Foto</label>
+                                                        <input type="file" name="foto" class="form-control">
+                                                    </div>
+                                                    <input type="submit" name="tambahPengaduan" value="simpan" class="btn btn-success">
+                                                </form>
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <table id="dataTablesNya" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Tanggal</th>
+                                                <th>Nik</th>
+                                                <th>Isi Laporan</th>
+                                                <th>Foto</th>
+                                                <th>Status</th>
+                                                <th>hapus</th>
+                                                <th>proses Pengaduan</th>
+                                            </tr>
+                                        </thead>
+                                        <?php  ?>
+                                        <tbody>
+                                            <?php
+                                            if ($_SESSION['level'] == 'masyarakat') {
+                                                $q = "SELECT * FROM `pengaduan` WHERE `nik` = $nik";
+                                            } else {
+                                                $q = "SELECT * FROM `pengaduan`";
+                                            }
+                                            $r = mysqli_query($con, $q);
+                                            $no = 1;
+                                            while ($d = mysqli_fetch_object($r)) {
+                                            ?>
+                                                <tr>
+                                                    <td><?= $no ?></td>
+                                                    <td><?= $d->tgl_pengaduan ?></td>
+                                                    <td><?= $d->nik ?></td>
+                                                    <td><?= $d->isi_laporan ?></td>
+                                                    <td><?php if ($d->foto == '') {
+                                                            echo '<img style="max-height:100px" class="img img-thumbnail" src="../../assets/images/no-foto.png">';
+                                                        } else {
+                                                            echo '<img style="max-height:100px" class="img img-thumbnail" src="../../assets/images/masyarakat/' . $d->foto . '">';
+                                                        } ?></td>
+                                                    <td><?= $d->status ?></td>
+                                                    <td>
+                                                        <?php if ($_SESSION['level'] == 'masyarakat') { ?>
+                                                            <form action="" method="post"><input type="hidden" name="id_pengaduan" value="<?= $d->id_pengaduan ?>"><button type="submit" name="hapus" class="btn btn-danger"><i class="fa fa-trash"></i></button></form>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td><?php if ($_SESSION['level'] == 'petugas') { ?>
+                                                            <form action="" method="post">
+                                                                <input type="hidden" name="id_pengaduan" value="<?= $d->id_pengaduan ?>">
+                                                                <select class="form-control" name="status">
+                                                                    <option value="0"> 0 </option>
+                                                                    <option value="proses"> proses </option>
+                                                                    <option value="selesai"> selesai </option>
+                                                                </select><br>
+                                                                <button type="submit" name="proses_pengaduan" class="btn btn-success form-control">ubah</button>
+                                                            </form>
+                                                        <?php } ?>
+                                                    </td>
+                                                </tr>
+                                            <?php $no++;
+                                            } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+                <!-- /.content -->
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+                All rights reserved.
+                <div class="float-right d-none d-sm-inline-block">
+                    <b>Version</b> 3.2.0
+                </div>
+            </footer>
+
+            <!-- Control Sidebar -->
+            <aside class="control-sidebar control-sidebar-dark">
+                <!-- Control sidebar content goes here -->
+            </aside>
+            <!-- /.control-sidebar -->
+        </div>
+        <!-- ./wrapper -->
+        <?php include('../../assets/footer.php') ?>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+auth
+
+<?php
+include('../../config/database.php');
+if (isset($_POST['cek'])) {
+    $pilihan = $_POST['pilihan']; //masyarakat atau petugas
+    $username = $_POST['username'];
+    $password = md5($_POST['password']);
+    if ($pilihan == 'masyarakat') {
+        $q = mysqli_query($con, "SELECT * FROM `masyarakat` WHERE username = '$username' AND password = '$password' AND verifikasi = 1");
+        $r = mysqli_num_rows($q);
+        if ($r == 1) {
+            $d = mysqli_fetch_object($q);
+            @session_start();
+            $_SESSION['nik'] = $d->nik;
+            $_SESSION['username'] = $d->username;
+            $_SESSION['nama'] = $d->nama;
+            $_SESSION['telp'] = $d->telp;
+            $_SESSION['level'] = 'masyarakat';
+            @header('location:../../modul/modul-profile/');
+        } else {
+            echo '<div class="alert alert-danger alert-dismissable"><a href="" class="close" data-dismiss="alert">x</a> <strong class="text-white">Data salah atau belum di verifikasi</strong></div>';
+        }
+    } else if ($pilihan == 'petugas') {
+        $q = mysqli_query($con, "SELECT * FROM `petugas` WHERE username = '$username' AND password = '$password'");
+        $r = mysqli_num_rows($q);
+        if ($r == 1) {
+            $d = mysqli_fetch_object($q);
+            @session_start();
+            $_SESSION['username'] = $d->username;
+            $_SESSION['level'] = $d->level;
+            $_SESSION['id_petugas'] = $d->id_petugas;
+            @header('location:../../modul/modul-petugas/');
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- header -->
+<?php include('../../assets/header.php') ?>
+
+<body">
+    <div class="wrapper">
+        <!-- Content Wrapper. Contains page content -->
+        <!-- Main content -->
+        <section class="content ">
+            <div class="container-fluid">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-3" style="margin-top:5%">
+                        <!-- jquery validation -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fa fa-users">&nbsp;</i>Login <small>SISPENMAS</small></h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <form action="" method="post">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Username</label>
+                                        <input type="text" name="username" class="form-control" placeholder="Masukan Username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Password</label>
+                                        <input type="password" name="password" class="form-control" placeholder="Masukan Password">
+                                    </div>
+                                    <label for="pilihan">.:LOGIN SEBAGAI:.</label>
+                                    <div class="form-group">
+                                        <select class="form-control" name="pilihan">
+                                            <option value="masyarakat">masyarakat</option>
+                                            <option value="petugas">Petugas</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <span class="text text-success">Belum terverifikasi?</span>Coba daftar <a href="registrasi.php">disini</a>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="form-group">
+                                        <button name="cek" type="submit" class="form-control btn btn-primary">Masuk</button>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </form>
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.container-fluid -->
+        <!-- /.content -->
+        <!-- /.content-wrapper -->
+    </div>
+    <!-- ./wrapper -->
+    <?php include('../../assets/footer.php') ?>
+
+    </body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+regis
+
+<?php
+include('../../config/database.php');
+if (isset($_POST['simpan'])) {
+    $nik = $_POST['nik'];
+    $nama = $_POST['nama'];
+    $username = $_POST['username'];
+    $password = md5($_POST['password']);
+    $telp = $_POST['telp'];
+    $q = mysqli_query($con, "INSERT INTO `masyarakat` (nik, nama, username, password, telp, verifikasi) VALUES ('$nik', '$nama', '$username', '$password', $telp, 0)");
+    if ($q) {
+        echo  '<div class="alert alert-success alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                Registrasi Berhasil Tunggu verifikasi oleh admin
+                </div>';
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- header -->
+<?php include('../../assets/header.php') ?>
+
+<body">
+    <div class="wrapper">
+        <!-- Content Wrapper. Contains page content -->
+        <!-- Main content -->
+        <section class="content ">
+            <div class="container-fluid">
+                <div class="row justify-content-md-center">
+                    <div class="col-md-3" style="margin-top:5%">
+                        <!-- jquery validation -->
+                        <div class="card card-success">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fa fa-users">&nbsp;</i>Registrasi Masyarakat <small>SISPENMAS</small></h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <form action="" method="post">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Nik</label>
+                                        <input type="text" name="nik" class="form-control" placeholder="Masukan NIK anda">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nama Lengkap Sesuai KTP</label>
+                                        <input type="text" name="nama" class="form-control" placeholder="Masukan Nama">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Username</label>
+                                        <input type="text" name="username" class="form-control" placeholder="Masukan Username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input type="password" name="password" class="form-control" placeholder="Masukan Password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Telp</label>
+                                        <input type="number" name="telp" class="form-control" placeholder="Masukan Nomor telepon">
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="form-group">
+                                        <button name="simpan" type="submit" class="form-control btn btn-success">Daftar</button>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <span class="text text-success">Sudah Verifikasi?</span>Silahkan Masuk <a href="index.php">disini</a>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </form>
+
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.container-fluid -->
+        <!-- /.content -->
+        <!-- /.content-wrapper -->
+    </div>
+    <!-- ./wrapper -->
+    <?php include('../../assets/footer.php') ?>
+
+    </body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+logout
+
+<?php
+@session_start();
+session_destroy();
+@header('location:../../index.php');
