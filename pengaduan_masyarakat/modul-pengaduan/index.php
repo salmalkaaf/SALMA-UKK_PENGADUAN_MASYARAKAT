@@ -1,36 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-    <?php
-if (isset($_POST['tambahp'])) {;
-    $id_pengaduan = $_POST['id_pengaduan'];
-    $nama = $_POST['nama'];
-    $username = $_POST['username'];
-    $foto = $_POST['foto'];
-}
-if (isset($_POST['edit'])) {
-    $status = $_POST['status'];
-    $nik = $_POST['nik'];
-    $q = mysqli_query($con, "UPDATE `masyarakat` SET verifikasi = '$status' WHERE nik = '$nik'");
-}
-
-if (isset($_POST['hapus'])) {
-    $nik = $_POST['nik'];
-    $q = mysqli_query($con, "DELETE FROM `masyarakat` WHERE nik = '$nik'");
-}
-if (isset($_POST['update'])) {
-    $nikLama = $_POST['nikLama'];
-    $nik = $_POST['nik'];
-    $nama = $_POST['nama'];
-    $username = $_POST['username'];
-    $telp = $_POST['telp'];
-    $password = md5($_POST['password']);
-    if ($password == '') {
-        $q = mysqli_query($con, "UPDATE `masyarakat` SET nik = '$nik', nama = '$nama', username = '$username', telp = '$telp' WHERE nik = '$nikLama'");
-    } else {
-        $q = mysqli_query($con, "UPDATE `masyarakat` SET `password` = '$password', nik = '$nik', nama = '$nama', username = '$username', telp = '$telp' WHERE nik = '$nikLama'");
+<?php
+@session_start();
+include('../../config/database.php');
+if (empty($_SESSION['username'])) {
+    @header('location:../modul-auth/index.php');
+} else {
+    if ($_SESSION['level'] == 'masyarakat') {
+        $nik = $_SESSION['nik'];
     }
 }
+// CRUD
+if (isset($_POST['tambahPengaduan'])) {
+    $isi_laporan = $_POST['isi_laporan'];
+    $tgl = $_POST['tgl_pengaduan'];
+    //upload
+    $ekstensi_diperbolehkan = array('jpg', 'png');
+    $foto = $_FILES['foto']['name'];
+    print_r($foto);
+    $x = explode(".", $foto);
+    $ekstensi = strtolower(end($x));
+    $file_tmp = $_FILES['foto']['tmp_name'];
+    if (!empty($foto)) {
+        if (in_array($ekstensi, $ekstensi_diperbolehkan) === true) {
+            $q = "INSERT INTO `pengaduan`(id_pengaduan, tgl_pengaduan, nik, isi_laporan, foto, `status`) VALUES ('', '$tgl', '$nik', '$isi_laporan', '$foto', '0')";
+            $r = mysqli_query($con, $q);
+            if ($r) {
+                move_uploaded_file($file_tmp, '../../assets/images/masyarakat/' . $foto);
+            }
+        }
+    } else {
+        $q = "INSERT INTO `pengaduan`(id_pengaduan, tgl_pengaduan, nik, isi_laporan, foto, `status`) VALUES ('', '$tgl', '$nik', '$isi_laporan', '', '0')";
+        $r = mysqli_query($con, $q);
+    }
+}
+
+// hapus pengaduan
+if (isset($_POST['hapus'])) {
+    $id_pengaduan = $_POST['id_pengaduan'];
+    if ($id_pengaduan != '') {
+        $q = "SELECT `foto` FROM `pengaduan` WHERE id_pengaduan = $id_pengaduan";
+        $r = mysqli_query($con, $q);
+        $d = mysqli_fetch_object($r);
+        unlink('../../assets/images/masyarakat/' . $d->foto);
+    }
+    $q = "DELETE FROM `pengaduan` WHERE id_pengaduan = $id_pengaduan";
+    $r = mysqli_query($con, $q);
+}
+
+// rubah status pengaduan
+if (isset($_POST['proses_pengaduan'])) {
+    $id_pengaduan = $_POST['id_pengaduan'];
+    $status = $_POST['status'];
+    $q = "UPDATE `pengaduan` SET status = '$status' WHERE id_pengaduan = '$id_pengaduan'";
+    $r = mysqli_query($con, $q);
+}
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+    
 <head>
     <meta charset="utf-8">
     <title>SISPEMAS</title>
@@ -98,7 +125,7 @@ if (isset($_POST['update'])) {
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                            <img class="rounded-circle me-lg-2" src="../assets/img/admin.jpg" alt="" style="width: 40px; height: 40px;">
                             <span class="d-none d-lg-inline-flex">Admin</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
@@ -152,7 +179,7 @@ if (isset($_POST['update'])) {
                                     <td>jhonathan_1</td>
                                     <th>Kebakaran</th>
                                     <td> - </td>
-                                    <td>0987654321</td>
+                                    <td>0</td>
                                     <td><button class="btn btn-info"name="edit"><i class=" fa fa-pen"></i> </button></td>
                                     <td><button class="btn btn-danger" name="hapus"><i class=" fa fa-trash"></i></button></td>
 

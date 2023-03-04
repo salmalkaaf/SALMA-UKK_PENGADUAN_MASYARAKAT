@@ -1,12 +1,40 @@
+<?php
+// SESSION
+@session_start();
+include('../../config/database.php');
+if (empty($_SESSION['username'])) {
+    @header('location:../modul-auth/index.php');
+} else {
+    if ($_SESSION['level'] == 'masyarakat') {
+        $nik = $_SESSION['nik'];
+    } else {
+        $id_petugas = $_SESSION['id_petugas'];
+    }
+}
+// tambah tanggapan
+if (isset($_POST['tambah_tanggapan'])) {
+    $id_pengaduan = $_POST['id_pengaduan'];
+    $tgl_tanggapan = $_POST['tgl_tanggapan'];
+    $id_petugas = $_POST['id_petugas'];
+    $tanggapan = $_POST['tanggapan'];
+    $q = "INSERT INTO `tanggapan` (id_tanggapan, id_pengaduan, tgl_tanggapan, tanggapan, id_petugas) VALUES ('','$id_pengaduan', '$tgl_tanggapan', '$tanggapan', '$id_petugas')";
+    $r = mysqli_query($con, $q);
+}
+// hapus tanggapan
+if (isset($_POST['hapusTanggapan'])) {
+    $id_tanggapan = $_POST['id_tanggapan'];
+    mysqli_query($con, "DELETE FROM `tanggapan` WHERE id_tanggapan = '$id_tanggapan'");
+}
+// update tanggapan
+if (isset($_POST['ubahTanggapan'])) {
+    $id_tanggapan =  $_POST['id_tanggapan'];
+    $tgl_tanggapan = $_POST['tgl_tanggapan'];
+    $tanggapan = $_POST['tanggapan'];
+    mysqli_query($con, "UPDATE `tanggapan` SET tgl_tanggapan = '$tgl_tanggapan', tanggapan = '$tanggapan' WHERE `id_tanggapan` = '$id_tanggapan'");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
-    <!-- <?php
-    session_start();
-    include('../koneksi.php');
-    // if (empty($_SESSION['username'])) {
-    //     @header('location:../modul-auth/index.php');
-    // }
-    // ?> -->
 <head>
     <meta charset="utf-8">
     <title>SISPEMAS</title>
@@ -55,9 +83,8 @@
                     <h3 class="text-primary"><i class="fa fa-globe me-2"></i>SISPEMAS</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
-                    <div class="position-relative">
-                        <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    <div class="position-relative">                            
+                        <img class="rounded-circle me-lg-2" src="../assets/img/admin.jpg" alt="" style="width: 40px; height: 40px;">
                     </div>
                     <div class="ms-3">
                         <h6 class="mb-0">Jhon Doe</h6>
@@ -173,7 +200,7 @@
                                     id="floatingTextarea" style="height: 150px;"></textarea>
                                 <label for="floatingTextarea">Tanggapan</label>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100" href="tanggapan.php">  Buat Tanggapan</button>
+                            <button type="submit" class="btn btn-primary w-100" href="index.php">  Buat Tanggapan</button>
 
                         </div>
                     </div>

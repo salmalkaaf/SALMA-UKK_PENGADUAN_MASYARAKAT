@@ -43,7 +43,7 @@ include('../koneksi.php');
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="position-relative">
-                        <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                        <img class="rounded-circle" src="../assets/img/admin.jpg" alt="" style="width: 40px; height: 40px;">
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
@@ -51,6 +51,8 @@ include('../koneksi.php');
                         <span>Admin</span>
                     </div>
                 </div>
+
+
                 <?php if ($_SESSION['level'] == 'masyarakat') { ?>
                 <div class="navbar-nav w-100">
                     <li class="nav-item">
@@ -62,6 +64,8 @@ include('../koneksi.php');
                         </a>
                     </li>
                     <?php }?>
+
+
                     <?php if ($_SESSION['level'] == 'admin') { ?>
                         <li class="nav-item">
                             <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/dokumentasi/pengaduan_masyarakat/modul-masyarakat/index.php" class="nav-link">
@@ -71,18 +75,16 @@ include('../koneksi.php');
                                 </p>
                             </a>
                         </li>
-
                         <?php } ?>
-                    
                         <li class="nav-item">
-                            <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/dokumentasi/pengaduan_masyarakat/modul-pengaduan/index.php" class="nav-link">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>
-                                    PENGADUAN
-                                </p>
+                            <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/dokumentasi/pengaduan_masyarakat/modul-pengaduan/index.php" class="nav-item nav-link">
+                                <i class="nav-icon fas fa-exclamation"></i>
+                                
+                                      PENGADUAN
+                                
                             </a>
                         </li>
-
+<!-- 
                     <?php if ($_SESSION['level'] == 'admin') { ?>
                         <li class="nav-item">
                             <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/dokumentasi/pengaduan_masyarakat/modul-petugas/index.php" class="nav-link">
@@ -92,7 +94,7 @@ include('../koneksi.php');
                                 </p>
                             </a>
                         </li>
-                        <?php } ?>
+                        <?php } ?> 
 
                         
                     <?php if ($_SESSION['level'] == 'admin') { ?>
@@ -106,12 +108,11 @@ include('../koneksi.php');
                         </li>
                         <?php } ?>
 
-                    <!-- 
-                    <a href="../modul-profile/index.html" class="nav-item nav-link  nav-link active" ><i class="fa fa-user me-2"></i>PROFILE</a>
-                    <a href="../modul-masyarakat/index.html" class="nav-item nav-link nav-item"><i class="fa fa-users me-2"></i>MASYARAKAT</a>
-                    <a href="../modul-pengaduan/index.html" class="nav-item nav-link"><i class="fa fa-exclamation me-2"></i>PENGADUAN</a>
-                    <a href="../modul-petugas/index.html" class="nav-item nav-link"><i class="fa fa-user-tie me-2"></i>PETUGAS</a>
-                    <a href="../modul-tanggapan/index.html" class="nav-item nav-link"><i class="fa fa-user-edit me-2"></i>TANGGAPAN</a> -->
+                    <a href="../modul-profile/index.php" class="nav-item nav-link " ><i class="fa fa-user me-2"></i>PROFILE</a>
+                    <a href="../modul-masyarakat/index.php" class="nav-item nav-link nav-item"><i class="fa fa-users me-2"></i>MASYARAKAT</a>
+                    <!-- <a href="../modul-pengaduan/index.html" class="nav-item nav-link"><i class="fa fa-exclamation me-2"></i>PENGADUAN</a> -->
+                    <a href="../modul-petugas/index.php" class="nav-item nav-link"><i class="fa fa-user-tie me-2"></i>PETUGAS</a>
+                    <a href="../modul-tanggapan/index.php" class="nav-item nav-link"><i class="fa fa-user-edit me-2"></i>TANGGAPAN</a>
                     <a href="../modul-auth/logout.php" class="nav-item nav-link"><i class="fa fa-pen-square me-2"></i>LOG OUT</a> 
                 </div>
             </nav>

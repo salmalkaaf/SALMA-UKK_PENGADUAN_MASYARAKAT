@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-include('../../config/database.php');
+include('../koneksi.php');
 // if (empty($_SESSION['username'])) {
 //     @header('location:../modul-auth/index.php');
 // }
-// CRUD
 if (isset($_POST['edit'])) {
     $status = $_POST['status'];
     $nik = $_POST['nik'];
@@ -141,7 +140,70 @@ if (isset($_POST['update'])) {
                                     <th scope="col">Hapus</th>
                                 </tr>
                             </thead>
-                            
+                            <tbody>
+                            <?php
+                                $q = mysqli_query($connection, "SELECT * FROM `masyarakat`");
+                                $no = 1;
+                                   while ($d = mysqli_fetch_object($q)) { ?>
+                                <tr>
+                                    <td><?= $no ?></td>
+                                    <td><?= $d->nik ?></td>
+                                    <td><?= $d->nama ?></td>
+                                    <td><?= $d->username ?></td>
+                                    <td><?= $d->telp ?></td>
+                                    <td><?php if ($d->verifikasi == 0) {
+                                            echo '<form action="" method="post"><input name="nik" type="hidden" value="' . $d->nik . '"><input name="status" type="hidden" value="1"><button name="edit" type="submit" class="btn btn-danger"><i class="fa fa-ban"></i></button></form>';
+                                        } else {
+                                                        echo '<form action="" method="post"><input name="nik" type="hidden" value="' . $d->nik . '"><input name="status" type="hidden" value="0"><button name="edit" type="submit" class="btn btn-info"><i class="fa fa-check"></i></button></form>';
+                                        } ?></td>
+                                                <td><button data-toggle="modal" data-target="#modal-xl<?= $d->nik ?>" class="btn btn-success"><i class="fa fa-pen"></i></button></td>
+                                    <td>
+                                        <form action="" method="post"><input type="hidden" name="nik" value="<?= $d->nik ?>"><button name="hapus" class="btn btn-danger"><i class="fa fa-trash"></i></button></form>
+                                    </td>
+                                </tr>
+                                <div class="modal fade" id="modal-xl<?= $d->nik ?>">
+                                                <div class="modal-dialog modal-xl<?= $d->nik ?>">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Edit Data</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <form action="" method="post">
+                                                            <input type="hidden" name="nikLama" value="<?= $d->nik ?>">
+                                                            <div class="modal-body">
+                                                                <div class="form-group"><label for="nik">Nik</label>
+                                                                    <input class="form-control" type="text" name="nik" value="<?= $d->nik ?>">
+                                                                </div>
+                                                                <div class="form-group"><label for="nama">Nama</label>
+                                                                    <input class="form-control" type="text" name="nama" value="<?= $d->nama ?>">
+                                                                </div>
+                                                                <div class="form-group"><label for="username">Username</label>
+                                                                    <input class="form-control" type="text" name="username" value="<?= $d->username ?>">
+                                                                </div>
+                                                                <div class="form-group"><label for="username">New Password</label>
+                                                                    <input class="form-control" type="password" name="password" value="">
+                                                                </div>
+                                                                <div class="form-group"><label for="username">Telepon</label>
+                                                                    <input class="form-control" type="number" name="telp" value="<?= $d->nik ?>">
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer justify-content-between">
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                <button type="submit" name="update" class="btn btn-primary">Save changes</button>
+                                                            </div>
+                                                    </div>
+                                                    </form>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                            <!-- modal - ends -->
+
+                                        <?php $no++;
+                                        }
+                                        ?>                                
                             </tbody>
                         </table>
                     </div>

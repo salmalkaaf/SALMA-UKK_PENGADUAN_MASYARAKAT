@@ -2,18 +2,17 @@
 <html lang="en">
 
 <?php
-session_start();
+@session_start();
 include('../koneksi.php');
-// if (empty($_SESSION['username'])) {
-//     @header('location:../modul-auth/index.php');
-// } else {
+if (empty($_SESSION['username'])) {
+    @header('location:../modul-auth/index.php');
+} else {
     $nik = $_SESSION['nik'];
     $nama = $_SESSION['nama'];
     $username = $_SESSION['username'];
     $telp = $_SESSION['telp'];
-// }
+}
 ?>
-<?= $username ?>
 
 <head>
     <meta charset="utf-8">
@@ -80,7 +79,7 @@ include('../koneksi.php');
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                            <img class="rounded-circle me-lg-2" src="../assets/img/admin.jpg" alt="" style="width: 40px; height: 40px;">
                             <span class="d-none d-lg-inline-flex">Admin</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
@@ -100,6 +99,8 @@ include('../koneksi.php');
             <!-- Sales Chart Start -->
      
             <!-- Sales Chart End -->
+
+            
             <div class="bg-secondary h-10 p-4">
                 <h5>Selamat Datang <?= $_SESSION['username'] ?></h5>
                 </div>
@@ -112,22 +113,24 @@ include('../koneksi.php');
                     <h6 class="mb-4">PROFILE</h6>
                     <div class="table-responsive">
                         <table class="table">
-                            
-
                             <thead>
                                 <tr>
-                                    <div class="card-header">Nama : <?= $nama ?></div>
+                                    <div scope="col">Nama : <?= $nama ?></div>
                                 </tr>
                             </thead>
                             <thead>
                                 <tr>
-                                    <div class="card-header">NIK : <?= $nik ?></div>
+                                    <div scope="col">NIK : <?= $nik ?></div>
                                 </tr>
                             </thead>
-
                             <thead>
                                 <tr>
-                                    <div class="card-header">Nomor Telfon : <?= $telp ?></div>
+                                    <div scope="col">Username : <?= $nik ?></div>
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <div scope="col">Nomor Telfon : <?= $telp ?></div>
                                 </tr>
                             </thead>
                         </table>

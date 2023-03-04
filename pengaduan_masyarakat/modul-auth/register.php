@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php
 include('../koneksi.php');
 if (isset($_POST['simpan'])) {

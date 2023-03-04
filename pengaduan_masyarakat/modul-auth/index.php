@@ -1,9 +1,10 @@
 <?php
+include('../koneksi.php');
 if (isset($_POST['cek'])) {
-    $pilihan = $_POST['pilihan']; //masyarakat atau petugas
+    $pilih = $_POST['pilih']; //masyarakat atau petugas
     $username = $_POST['username'];
     $password = md5($_POST['password']);
-    if ($pilihan == 'masyarakat') {
+    if ($pilih == 'masyarakat') {
         $q = mysqli_query($connection, "SELECT * FROM `masyarakat` WHERE username = '$username' AND password = '$password' AND verifikasi = 1");
         $r = mysqli_num_rows($q);
         if ($r == 1) {
@@ -14,14 +15,14 @@ if (isset($_POST['cek'])) {
             $_SESSION['nama'] = $d->nama;
             $_SESSION['telp'] = $d->telp;
             $_SESSION['level'] = 'masyarakat';
-            @header('location:../../modul/modul-profile/');
+            @header('location:../modul-profile/');
         } else {
             echo '<div class="alert alert-danger alert-dismissable">
                 <a href="" class="close" data-dismiss="alert">x</a> 
                 <strong class="text-white">Data salah atau belum di verifikasi</strong>
             </div>';
         }
-    } else if ($pilihan == 'petugas') {
+    } else if ($pilih == 'petugas') {
         $q = mysqli_query($connection, "SELECT * FROM `petugas` WHERE username = '$username' AND password = '$password'");
         $r = mysqli_num_rows($q);
         if ($r == 1) {
@@ -30,14 +31,14 @@ if (isset($_POST['cek'])) {
             $_SESSION['username'] = $d->username;
             $_SESSION['level'] = $d->level;
             $_SESSION['id_petugas'] = $d->id_petugas;
-            @header('location:../../modul-petugas/');
+            @header('location:../modul-petugas/');
         }
     }
 }
 ?>
 
-    <!DOCTYPE html>
-    <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>SISPEMAS | LOGIN</title>
@@ -69,6 +70,7 @@ if (isset($_POST['cek'])) {
 </head>
 
 <body>
+    <div class="wrapper">
     <div class="container-fluid position-relative d-flex p-0">
         <!-- Spinner Start -->
         <div id="spinner" class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
@@ -85,28 +87,30 @@ if (isset($_POST['cek'])) {
                 <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
                     <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <a href="index.html" class="">
+                            <!-- <a href="index.html" class=""> -->
                                 <h3 class="text-primary"><i class="fa fa-globe me-2"></i>SISPEMAS</h3>
                             </a>
                             <h3>LOGIN</h3>
                         </div>
-                        <div class="form-group form-floating mb-3">
-                            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                            <label for="floatingInput">Username</label>
-                        </div>
-                        <div class="form-group form-floating mb-4">
-                            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                            <label for="floatingPassword">Password</label>
-                        </div>
-                        <div class="form-group form-floating mb-3">
-                            <select class="form-select" id="floatingSelect"
-                                aria-label="Floating label select example">
-                                <option selected> </option>
-                                <option value="1">Admin</option>
-                                <option value="0">Masyarakat</option>
-                            </select>
-                            <label for="form-group floatingSelect pilih">Pilih Pengguna</label>
-                        </div>
+                        
+                        <form action="" method="post">
+                            <div class="card-body">
+                                <div class="form-group form-floating mb-3">
+                                    <input type="text" name="username" class="form-control" id="floatingInput" placeholder="name@example.com">
+                                    <label for="floatingInput">Username</label>
+                                </div>
+                                <div class="form-group form-floating mb-4">
+                                    <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password">
+                                    <label for="floatingPassword">Password</label>
+                                </div>
+                                <div class="form-group form-floating mb-3">
+                                    <select class="form-control" id="floatingSelect" name="pilih">
+                                        <option selected> </option>
+                                        <option value="petugas">Petugas</option>
+                                        <option value="masyarakat">Masyarakat</option>
+                                    </select>
+                                    <label for="pilih floatingSelect">Pilih Pengguna</label>
+                                </div>
                         <!-- <div class="d-flex align-items-center justify-content-between mb-4">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -114,14 +118,19 @@ if (isset($_POST['cek'])) {
                             </div>
                             <a href="">Forgot Password</a>
                         </div> -->
-                        <div class="form-group">
-                            <button name="check" type="submit" class="btn btn-primary py-3 mb-4 w-100" class="form-control" ></a>Masuk</button>
-                        <p class="text-center mb-0">Tidak punya akun? <a href="../modul-auth/register.php">Daftar</a></p>
-                        </div>  
+                                <div class="form-group">
+                                    <button name="cek" type="submit" class="form-control btn btn-primary py-3 mb-4 w-100">Masuk</button>
+                                </div>  
+                                <div class="form-group">
+                                    <p class="text-center mb-0">Tidak punya akun? <a href="../modul-auth/register.php">Daftar</a></p>
+                                </div>  
+                        </div>
+                    </form>
                     </div>
                 </div>
             </div>
         </div>
+</div>
         <!-- Sign In End -->
     </div>
 
