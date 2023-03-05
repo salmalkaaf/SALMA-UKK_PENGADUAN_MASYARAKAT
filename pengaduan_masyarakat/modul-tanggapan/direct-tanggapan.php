@@ -182,3 +182,38 @@
 </body>
 
 </html>
+
+
+
+<!--  <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h6 class="mb-4">Buat Tanggapan</h6>
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="floatingInput"
+                                    placeholder="ISI NIK">
+                                <label for="floatingInput">ID Petugas</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="floatingPassword"
+                                    placeholder="Password">
+                                <label for="floatingPassword">Nama</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" id="floatingdate"
+                                    placeholder="date">
+                                <label type="date" for="floatingdate">Tanggal tanggapan</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" placeholder="Leave a comment here"
+                                    id="floatingTextarea" style="height: 150px;"></textarea>
+                                <label for="floatingTextarea">Tanggapan</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100" href="index.php">  Buat Tanggapan</button>
+
+                        </div>
+                    </div>
+            </div>
+            </div> -->
+

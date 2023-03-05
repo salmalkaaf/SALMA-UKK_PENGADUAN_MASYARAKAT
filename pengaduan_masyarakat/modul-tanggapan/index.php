@@ -1,7 +1,7 @@
 <?php
 // SESSION
 @session_start();
-include('../../config/database.php');
+include('../koneksi.php');
 if (empty($_SESSION['username'])) {
     @header('location:../modul-auth/index.php');
 } else {
@@ -18,23 +18,49 @@ if (isset($_POST['tambah_tanggapan'])) {
     $id_petugas = $_POST['id_petugas'];
     $tanggapan = $_POST['tanggapan'];
     $q = "INSERT INTO `tanggapan` (id_tanggapan, id_pengaduan, tgl_tanggapan, tanggapan, id_petugas) VALUES ('','$id_pengaduan', '$tgl_tanggapan', '$tanggapan', '$id_petugas')";
-    $r = mysqli_query($con, $q);
+    $r = mysqli_query($connection, $q);
 }
 // hapus tanggapan
 if (isset($_POST['hapusTanggapan'])) {
     $id_tanggapan = $_POST['id_tanggapan'];
-    mysqli_query($con, "DELETE FROM `tanggapan` WHERE id_tanggapan = '$id_tanggapan'");
+    mysqli_query($connection, "DELETE FROM `tanggapan` WHERE id_tanggapan = '$id_tanggapan'");
 }
 // update tanggapan
 if (isset($_POST['ubahTanggapan'])) {
-    $id_tanggapan =  $_POST['id_tanggapan'];
+    $id_tanggapan = $_POST['id_tanggapan'];
     $tgl_tanggapan = $_POST['tgl_tanggapan'];
     $tanggapan = $_POST['tanggapan'];
-    mysqli_query($con, "UPDATE `tanggapan` SET tgl_tanggapan = '$tgl_tanggapan', tanggapan = '$tanggapan' WHERE `id_tanggapan` = '$id_tanggapan'");
+    mysqli_query($conection, "UPDATE `tanggapan` SET tgl_tanggapan = '$tgl_tanggapan', tanggapan = '$tanggapan' WHERE `id_tanggapan` = '$id_tanggapan'");
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
+<style>
+   .modal-body
+{
+    background-color: #131313;
+}
+
+.modal-content
+{
+    background-color: transparent;
+}
+
+.modal-header
+{
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    -webkit-border-top-left-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+    -moz-border-radius-topleft: 6px;
+    -moz-border-radius-topright: 6px;
+    background-color: #D30000;
+    color: white;
+}
+ 
+</style>
+
 <head>
     <meta charset="utf-8">
     <title>SISPEMAS</title>
@@ -48,8 +74,9 @@ if (isset($_POST['ubahTanggapan'])) {
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet"> 
-    
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap"
+        rel="stylesheet">
+
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -63,12 +90,13 @@ if (isset($_POST['ubahTanggapan'])) {
 
     <!-- Template Stylesheet -->
     <link href="../assets/css/style.css" rel="stylesheet">
-</head> 
+</head>
 
 <body>
     <div class="container-fluid position-relative d-flex p-0">
         <!-- Spinner Start -->
-        <div id="spinner" class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div id="spinner"
+            class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
             <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
@@ -83,15 +111,16 @@ if (isset($_POST['ubahTanggapan'])) {
                     <h3 class="text-primary"><i class="fa fa-globe me-2"></i>SISPEMAS</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
-                    <div class="position-relative">                            
-                        <img class="rounded-circle me-lg-2" src="../assets/img/admin.jpg" alt="" style="width: 40px; height: 40px;">
+                    <div class="position-relative">
+                        <img class="rounded-circle me-lg-2" src="../assets/img/admin.jpg" alt=""
+                            style="width: 40px; height: 40px;">
                     </div>
                     <div class="ms-3">
                         <h6 class="mb-0">Jhon Doe</h6>
                         <span>Admin</span>
                     </div>
                 </div>
-                <?php include('../assets/menu.php')?>
+                <?php include('../assets/menu.php') ?>
             </nav>
         </div>
         <!-- MENU End -->
@@ -111,14 +140,15 @@ if (isset($_POST['ubahTanggapan'])) {
                     <input class="form-control bg-dark border-0" type="search" placeholder="Search">
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
-                  
+
                     <div class="nav-item dropdown">
-                
-              
+
+
                     </div>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                            <img class="rounded-circle me-lg-2" src="../assets/img/admin.jpg" alt=""
+                                style="width: 40px; height: 40px;">
                             <span class="d-none d-lg-inline-flex">Admin</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
@@ -129,83 +159,153 @@ if (isset($_POST['ubahTanggapan'])) {
                     </div>
                 </div>
             </nav>
-            <!-- Navbar End -->
 
-
-            <!-- Sale & Revenue Start -->
-         
-            <!-- Sale & Revenue End -->
-
-            <!-- Sales Chart Start -->
-     
-            <!-- Sales Chart End -->
-
-
-            <!-- Recent Sales Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
-            <div class="col-12">
-                <div class="bg-secondary rounded h-100 p-4">
-                    <h6 class="mb-4">TANGGAPAN</h6>
-                    
-                    <button type="submit" class="btn btn-primary m-2" href="direct-tanggapan.php"><i class="fa fa-plus"></i>   Buat tanggapan</button>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">ID_Tanggapan</th>
-                                    <th scope="col">ID_Pengaduan</th>
-                                    <th scope="col">Tanggal Pengaduan</th>
-                                    <th scope="col">Tanggapan</th>
-                                    <th scope="col">ID_Petugas</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                   
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="col-12">
+                        <div class="bg-secondary rounded h-100 p-4">
+                            <h6 class="mb-4">TANGGAPAN</h6>
+
+                            <div class="modal fade" id="modal-lg">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            Tambah Tanggapan
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="" method="post">
+                                                <label for="id_pengaduan"> Pilih Id Pengaduan</label>
+                                                <select name="id_pengaduan" class="form-control">
+                                                    <?php
+                                                    $q = "SELECT * FROM pengaduan JOIN `masyarakat` WHERE pengaduan.nik = masyarakat.nik";
+                                                    $r = mysqli_query($connection, $q);
+                                                    while ($d = mysqli_fetch_object($r)) { ?>
+                                                        <option value="<?= $d->id_pengaduan ?>"><?= $d->id_pengaduan . '|' . $d->nik . '|' . $d->nama ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                                <br>
+                                                <label for="tgl_tanggapan">Tanggal</label>
+                                                <input class="form-control" type="date" name="tgl_tanggapan">
+                                                <label for="tanggapan">Beri Tanggapan</label>
+                                                <textarea class="form-control" name="tanggapan" id="" cols="30"
+                                                    rows="10"></textarea>
+                                                <label for="id_petugas">ID Petugas</label>
+                                                <input name="id_petugas" type="text" class="form-control"
+                                                    value="<?= $id_petugas ?>" readonly>
+                                                <br>
+                                                <button name="tambah_tanggapan" type="submit"
+                                                    class="btn btn-danger">simpan</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button data-bs-toggle="modal" data-bs-target="#modal-lg" type="submit"
+                                class="btn btn-primary m-2"><i class="fa fa-plus"></i> Buat tanggapan</button>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID_Tanggapan</th>
+                                            <th scope="col">ID_Pengaduan</th>
+                                            <th scope="col">Tanggal Pengaduan</th>
+                                            <th scope="col">Tanggapan</th>
+                                            <th scope="col">ID_Petugas</th>
+                                            <th scope="col">Hapus</th>
+                                            <th scope="col">Edit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $no = 1;
+                                        $q = "SELECT * FROM `tanggapan` JOIN `petugas` JOIN `pengaduan`
+                             WHERE tanggapan.id_petugas = petugas.id_petugas 
+                             AND tanggapan.id_pengaduan = pengaduan.id_pengaduan";
+                                        $r = mysqli_query($connection, $q);
+                                        while ($d = mysqli_fetch_object($r)) { ?>
+                                            <tr>
+                                                <td>
+                                                    <?= $no ?>
+                                                </td>
+                                                <td>
+                                                    <?= $d->id_pengaduan ?>
+                                                </td>
+                                                <td>
+                                                    <?= $d->tgl_tanggapan ?>
+                                                </td>
+                                                <td>
+                                                    <?= $d->tanggapan ?>
+                                                </td>
+                                                <td>
+                                                    <?= $d->nama_petugas ?>
+                                                </td>
+                                                <td>
+                                                    <?php if ($_SESSION['level'] != 'masyarakat') { ?>
+                                                        <form action="" method="post"><input type="hidden" name="id_tanggapan"
+                                                                value="<?= $d->id_tanggapan ?>"><button name="hapusTanggapan"
+                                                                class="btn btn-danger" type="submit"><i
+                                                                    class="fa fa-trash"></i></button></form>
+                                                    <?php } ?>
+                                                </td>
+                                                <td>
+                                                    <?php if ($_SESSION['level'] != 'masyarakat') { ?>
+                                                        <button class="btn btn-success" data-toggle="modal"
+                                                            data-target="#modal-lg<?= $d->id_pengaduan ?>"
+                                                            class="btn btn-success"><i class="fa fa-pen"></i></button>
+                                                    <?php } ?>
+                                                </td>
+                                            </tr>
+                                            <div class="modal fade" id="modal-lg<?= $d->id_pengaduan ?>">
+                                                <div class="modal-dialog modal-lg<?= $d->id_pengaduan ?>">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            Edit Pengaduan
+                                                        </div>
+                                                        <form action="" method="post">
+                                                            <div class="modal-body">
+                                                                <input class="form-control" name="id_tanggapan"
+                                                                    type="hidden" value="<?= $d->id_tanggapan ?>">
+                                                                <label for="id_pengaduan">ID Pengaduan</label><br>
+                                                                <select class="form-control" name="id_pengaduan">
+                                                                    <?php
+                                                                    $result = mysqli_query($connection, "SELECT * FROM `pengaduan` JOIN `masyarakat` WHERE pengaduan.nik = masyarakat.nik");
+                                                                    while ($data = mysqli_fetch_object($result)) { ?>
+                                                                        <option value="<?= $data->id_pengaduan ?>" <?php if ($d->id_pengaduan == $data->id_pengaduan) {
+                                                                              echo 'selected';
+                                                                          } ?>><?= $data->id_pengaduan . '|' . $data->nik . '|' . $data->nama ?></option>
+                                                                    <?php } ?>
+                                                                </select><br>
+                                                                <label for="tgl_tanggapan">Tanggal Tanggapan</label>
+                                                                <input class="form-control" name="tgl_tanggapan"
+                                                                    class="form-control" type="date" name=""
+                                                                    value="<?= $d->tgl_tanggapan ?>">
+                                                                <label for="tanggapan">Tanggapan</label>
+                                                                <textarea class="form-control" name="tanggapan" id=""
+                                                                    cols="30" rows="10"><?= $d->tanggapan ?></textarea>
+                                                                <br>
+                                                                <button name="ubahTanggapan" type="submit"
+                                                                    class="btn btn-info">Update</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <?php $no++;
+                                        } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            </div>
             </div>
             <!-- Recent Sales End -->
 
 
             <!-- MODUL TANGGAPAN -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="col-sm-12 col-xl-6">
-                        <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Buat Tanggapan</h6>
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="floatingInput"
-                                    placeholder="ISI NIK">
-                                <label for="floatingInput">ID Petugas</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="floatingPassword"
-                                    placeholder="Password">
-                                <label for="floatingPassword">Nama</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="date" class="form-control" id="floatingdate"
-                                    placeholder="date">
-                                <label type="date" for="floatingdate">Tanggal tanggapan</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <textarea class="form-control" placeholder="Leave a comment here"
-                                    id="floatingTextarea" style="height: 150px;"></textarea>
-                                <label for="floatingTextarea">Tanggapan</label>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100" href="index.php">  Buat Tanggapan</button>
 
-                        </div>
-                    </div>
-            </div>
-            </div>
             <!-- MODUL TANGGAPAN END -->
 
 
@@ -214,7 +314,7 @@ if (isset($_POST['ubahTanggapan'])) {
                 <div class="bg-secondary rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">SISPEMAS</a>, All Right Reserved. 
+                            &copy; <a href="#">SISPEMAS</a>, All Right Reserved.
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->

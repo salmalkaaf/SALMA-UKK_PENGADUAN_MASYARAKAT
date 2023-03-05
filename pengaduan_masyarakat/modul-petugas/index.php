@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php
+@session_start();
+include('../koneksi.php');
+if (empty($_SESSION['username'])) {
+    @header('location:../modul-auth/index.php');
+} else {
+    $id_petugas = $_SESSION['id_petugas'];
+    $nama_petugas = $_SESSION['nama_petugas'];
+    $username = $_SESSION['username'];
+    $password = $_SESSION['password'];
+    $telp = $_SESSION['telp'];
+    $level = $_SESSION['level'];
+}
+?>
+
 <head>
     <meta charset="utf-8">
     <title>SISPEMAS</title>
@@ -79,19 +94,7 @@
                     </div>
                 </div>
             </nav>
-            <!-- Navbar End -->
-
-
-            <!-- Sale & Revenue Start -->
-         
-            <!-- Sale & Revenue End -->
-
-            <!-- Sales Chart Start -->
-     
-            <!-- Sales Chart End -->
-
-
-            <!-- Recent Sales Start -->
+            
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
             <div class="col-12">
@@ -101,6 +104,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th scope="col">No</th>
                                     <th scope="col">ID_Petugas</th>
                                     <th scope="col">Nama Petugas</th>
                                     <th scope="col">Username</th>
@@ -110,9 +114,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                 
-                                </tr>
+                            <?php
+                                            $no = 1;
+                                            ?>
+                                                <tr>
+                                                    <th><?= $no ?></th>
+                                                    <th><?= $id_petugas ?></th>
+                                                    <th><?= $nama_petugas ?></th>
+                                                    <th><?= $username ?></th>
+                                                    <th><?= $password ?></th>
+                                                    <th><?= $telp ?></th>
+                                                    <th><?= $level ?></th>
+                                                </tr>
+                                            <?php $no++;?>
                             </tbody>
                         </table>
                     </div>
