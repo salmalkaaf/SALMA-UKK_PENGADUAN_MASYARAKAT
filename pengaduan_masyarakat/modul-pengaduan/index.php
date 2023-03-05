@@ -24,7 +24,7 @@ if (isset($_POST['tambahPengaduan'])) {
             $q = "INSERT INTO `pengaduan`(id_pengaduan, tgl_pengaduan, nik, isi_laporan, foto, `status`) VALUES ('', '$tgl', '$nik', '$isi_laporan', '$foto', '0')";
             $r = mysqli_query($connection, $q);
             if ($r) {
-                move_uploaded_file($file_tmp, '../../assets/images/masyarakat/' . $foto);
+                move_uploaded_file($file_tmp, '../assets/img/masyarakat/' . $foto);
             }
         }
     } else {
@@ -40,7 +40,7 @@ if (isset($_POST['hapus'])) {
         $q = "SELECT `foto` FROM `pengaduan` WHERE id_pengaduan = $id_pengaduan";
         $r = mysqli_query($connection, $q);
         $d = mysqli_fetch_object($r);
-        unlink('../../assets/images/masyarakat/' . $d->foto);
+        unlink('../assets/img/masyarakat/' . $d->foto);
     }
     $q = "DELETE FROM `pengaduan` WHERE id_pengaduan = $id_pengaduan";
     $r = mysqli_query($connection, $q);
@@ -144,7 +144,7 @@ if (isset($_POST['proses_pengaduan'])) {
                     <div class="table-responsive">
                         <table class="table">
                     <?php if ($_SESSION['level'] == 'masyarakat') { ?>
-                        <button  data-toggle="modal" data-target="#modal-lg" class="btn btn-primary m-2"><i class="fa fa-plus"></i>   Buat Pengaduan</button>
+                        <button  data-bs-toggle="modal" data-bs-target="#modal-lg" class="btn btn-primary m-2"><i class="fa fa-plus"></i>   Buat Pengaduan</button>
                     <?php } ?> 
 
                     <div class="modal fade" id="modal-lg">
@@ -176,18 +176,22 @@ if (isset($_POST['proses_pengaduan'])) {
                                     </div>
                                 </div>
                                 <thead>
-                                <tr>
-                                    <th scope="col">No</th>
-                                    <th scope="col">Tanggal Pengaduan</th>
+                                <tr style="text-align: center;">
+                                    <th scope="col">NO</th>
+                                    <th scope="col">TANGGAL PENGADUAN</th>
                                     <th scope="col">NIK</th>
-                                    <th scope="col">Isi Laporan</th>
-                                    <th scope="col">Foto</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Hapus</th>
-                                    <th scope="col">Proses Pengaduan</th>
+                                    <th scope="col">ISI LAPORAN</th>
+                                    <th scope="col">FOTO</th>
+                                    <th scope="col">STATUS</th>
+                                    <?php if ($_SESSION['level'] == 'masyarakat') { ?>
+                                    <th scope="col">HAPUS</th>
+                                    <?php } ?>
+                                    <?php if ($_SESSION['level'] == 'petugas') { ?>
+                                    <th scope="col" colspan="2">PROSES PENGADUAN</th>
+                                    <?php } ?>
                                 </tr>
                             </thead>
-                            <tbody> <?php
+                            <tbody style="text-align: center;"> <?php
                                             if ($_SESSION['level'] == 'masyarakat') {
                                                 $q = "SELECT * FROM `pengaduan` WHERE `nik` = $nik";
                                             } else {
@@ -205,14 +209,18 @@ if (isset($_POST['proses_pengaduan'])) {
                                                     <td><?php if ($d->foto == '') {
                                                             echo '<img style="max-height:100px" class="img img-thumbnail" src="../assets/img/no-img.png">';
                                                         } else {
-                                                            echo '<img style="max-height:100px" class="img img-thumbnail" src="../assets/images/masyarakat/' . $d->foto . '">';
+                                                            echo '<img style="max-height:100px" class="img img-thumbnail" src="../assets/img/masyarakat/' . $d->foto . '">';
                                                         } ?></td>
                                                     <td><?= $d->status ?></td>
+                                                    <?php if ($_SESSION['level'] == 'masyarakat') { ?>
                                                     <td>
-                                                        <?php if ($_SESSION['level'] == 'masyarakat') { ?>
-                                                            <form action="" method="post"><input type="hidden" name="id_pengaduan" value="<?= $d->id_pengaduan ?>"><button type="submit" name="hapus" class="btn btn-danger"><i class="fa fa-trash"></i></button></form>
-                                                        <?php } ?>
+                                                        <form action="" method="post"><input type="hidden" name="id_tanggapan"
+                                                                value="<?= $d->id_tanggapan ?>"><button name="hapusTanggapan"
+                                                                class="btn btn-danger" type="submit"><i
+                                                                    class="fa fa-trash"></i></button>
+                                                        </form>
                                                     </td>
+                                                    <?php } ?>
                                                     <td><?php if ($_SESSION['level'] == 'petugas') { ?>
                                                             <form action="" method="post">
                                                                 <input type="hidden" name="id_pengaduan" value="<?= $d->id_pengaduan ?>">
@@ -220,8 +228,11 @@ if (isset($_POST['proses_pengaduan'])) {
                                                                     <option value="0"> 0 </option>
                                                                     <option value="proses"> proses </option>
                                                                     <option value="selesai"> selesai </option>
-                                                                </select><br>
-                                                                <button type="submit" name="proses_pengaduan" class="btn btn-success form-control">ubah</button>
+                                                                </select>
+                                                                
+                                                                <td>
+                                                                        <button type="submit" name="proses_pengaduan" class="btn btn-success form-control">ubah</button>
+                                                                </td>
                                                             </form>
                                                         <?php } ?>
                                                     </td>

@@ -92,7 +92,7 @@ include('../koneksi.php');
                     </a>
                 </li>
 
-                <?php if ($_SESSION['level'] == 'admin') { ?>
+                <?php if ($_SESSION['level'] == 'petugas') { ?>
                     <li class="nav-item">
                         <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/dokumentasi/pengaduan_masyarakat/modul-petugas/index.php"
                             class="nav-link">

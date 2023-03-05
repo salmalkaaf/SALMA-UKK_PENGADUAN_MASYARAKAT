@@ -8,11 +8,6 @@ if (empty($_SESSION['username'])) {
     @header('location:../modul-auth/index.php');
 } else {
     $id_petugas = $_SESSION['id_petugas'];
-    $nama_petugas = $_SESSION['nama_petugas'];
-    $username = $_SESSION['username'];
-    $password = $_SESSION['password'];
-    $telp = $_SESSION['telp'];
-    $level = $_SESSION['level'];
 }
 ?>
 
@@ -115,16 +110,18 @@ if (empty($_SESSION['username'])) {
                             </thead>
                             <tbody>
                             <?php
+                              $q = "SELECT * FROM `petugas`";
+                              $r = mysqli_query($connection, $q);
                                             $no = 1;
                                             ?>
                                                 <tr>
-                                                    <th><?= $no ?></th>
-                                                    <th><?= $id_petugas ?></th>
-                                                    <th><?= $nama_petugas ?></th>
-                                                    <th><?= $username ?></th>
-                                                    <th><?= $password ?></th>
-                                                    <th><?= $telp ?></th>
-                                                    <th><?= $level ?></th>
+                                                    <th> <?= $no ?></th>
+                                                    <th> <?= $_SESSION['id_petugas'] ?></th>
+                                                    <th> <?= $_SESSION['nama_petugas'] ?></th>
+                                                    <th> <?= $_SESSION['username'] ?></th>
+                                                    <th> <?= $_SESSION['password'] ?></th>
+                                                    <th> <?= $_SESSION['telp'] ?></th>
+                                                    <th> <?= $_SESSION['level'] ?></th>
                                                 </tr>
                                             <?php $no++;?>
                             </tbody>
