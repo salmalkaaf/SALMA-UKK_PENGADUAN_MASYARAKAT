@@ -11,6 +11,14 @@ if (empty($_SESSION['username'])) {
 }
 ?>
 
+
+<?php @session_start();
+    if (!empty($_SESSION['username'])) { ?>
+        <!-- datatables -->
+        <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="../assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+        <link rel="stylesheet" href="../assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <?php } ?>
 <head>
     <meta charset="utf-8">
     <title>SISPEMAS</title>
@@ -68,35 +76,36 @@ if (empty($_SESSION['username'])) {
             <div class="col-12">
                 <div class="bg-secondary rounded h-100 p-4">
                     <h6 class="mb-4">PETUGAS</h6>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
+                    <div class="table-responsive" >
+                        <table class="table" id="dataTablesNya">
+                            <thead  style="text-align: center";>
                                 <tr>
-                                    <th scope="col">No</th>
-                                    <th scope="col">ID_Petugas</th>
-                                    <th scope="col">Nama Petugas</th>
-                                    <th scope="col">Username</th>
-                                    <th scope="col">Password</th>
-                                    <th scope="col">Nomor Telfon</th>
-                                    <th scope="col">Level</th>
+                                    <th scope="col">NO</th>
+                                    <th scope="col">ID PETUGAS</th>
+                                    <th scope="col">NAMA PETUGAS</th>
+                                    <th scope="col">USERNAME</th>
+                                    <th scope="col">PASSWORD</th>
+                                    <th scope="col">NOMOR TELFON</th>
+                                    <th scope="col">LEVEL</th>
                                 </tr>
                             </thead>
                             <tbody>
                             <?php
-                              $q = "SELECT * FROM `petugas`";
-                              $r = mysqli_query($connection, $q);
+                              $q = mysqli_query($connection,"SELECT * FROM `petugas`");
                                             $no = 1;
-                                            ?>
+                                            while($d = mysqli_fetch_object($q)) { ?>
+                                            
                                                 <tr>
                                                     <th> <?= $no ?></th>
-                                                    <th> <?= $_SESSION['id_petugas'] ?></th>
-                                                    <th> <?= $_SESSION['nama_petugas'] ?></th>
-                                                    <th> <?= $_SESSION['username'] ?></th>
-                                                    <th> <?= $_SESSION['password'] ?></th>
-                                                    <th> <?= $_SESSION['telp'] ?></th>
-                                                    <th> <?= $_SESSION['level'] ?></th>
+                                                    <th> <?= $d->id_petugas ?></th>
+                                                    <th> <?= $d->nama_petugas?></th>
+                                                    <th> <?= $d->username ?></th>
+                                                    <th> <?= $d->password ?></th>
+                                                    <th> <?= $d->telp ?></th>
+                                                    <th> <?= $d->level ?></th>
                                                 </tr>
-                                            <?php $no++;?>
+                                            <?php $no++;
+                                            }?>
                             </tbody>
                         </table>
                     </div>
@@ -111,28 +120,16 @@ if (empty($_SESSION['username'])) {
 
 
             <!-- FOOTER Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-secondary rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">SISPEMAS</a>, All Right Reserved. 
-                        </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                            <br>Distributed By: <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+           
             <!-- FOOTER End -->
         </div>
         <!-- Content End -->
-
-
+        
+        
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+    
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -147,6 +144,43 @@ if (empty($_SESSION['username'])) {
 
     <!-- Template Javascript -->
     <script src="../assets/js/main.js"></script>
+
+    <script src="../assets/js/main.js"></script>
+    <?php @session_start();
+    if (!empty($_SESSION['username'])) { ?>
+     <!-- DataTables  & Plugins -->
+     <script src="../assets/plugins/datatables/jquery.dataTables.min.js"></script>
+     <script src="../assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+     <script src="../assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+     <script src="../assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+     <script src="../assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+     <script src="../assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+     <script src="../assets/plugins/jszip/jszip.min.js"></script>
+     <script src="../assets/plugins/pdfmake/pdfmake.min.js"></script>
+     <script src="../assets/plugins/pdfmake/vfs_fonts.js"></script>
+     <script src="../assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+     <script src="../assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+     <script src="../assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+     <script>
+         $(function() {
+             $("#dataTablesNya").DataTable({
+                 "responsive": true,
+                 "lengthChange": false,
+                 "autoWidth": false,
+                 "buttons": ["excel", "pdf", "print"]
+             }).buttons().container().appendTo('#dataTablesNya_wrapper .col-md-6:eq(0)');
+             $('#example2').DataTable({
+                 "paging": true,
+                 "lengthChange": false,
+                 "searching": false,
+                 "ordering": true,
+                 "info": true,
+                 "autoWidth": false,
+                 "responsive": true,
+             });
+         });
+     </script>
+ <?php } ?>
 </body>
 
 </html>

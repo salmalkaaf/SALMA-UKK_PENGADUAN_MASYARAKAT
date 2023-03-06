@@ -78,7 +78,7 @@ include('../koneksi.php');
                 <?php } ?>
 
 
-                <?php if ($_SESSION['level'] == 'admin') { ?>
+                <?php if ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'petugas') { ?>
                     <li class="nav-item">
                         <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/dokumentasi/pengaduan_masyarakat/modul-masyarakat/index.php"
                             class="nav-link">
@@ -100,7 +100,7 @@ include('../koneksi.php');
                     </a>
                 </li>
 
-                <?php if ($_SESSION['level'] == 'petugas') { ?>
+                <?php if ($_SESSION['level'] == 'petugas' || $_SESSION['level'] == 'admin') { ?>
                     <li class="nav-item">
                         <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/dokumentasi/pengaduan_masyarakat/modul-petugas/index.php"
                             class="nav-link">
@@ -110,7 +110,7 @@ include('../koneksi.php');
                     </li>
                 <?php } ?>
 
-                <?php if ($_SESSION['level'] == 'admin') { ?>
+                <?php if ($_SESSION['level'] == 'admin'|| $_SESSION['level'] == 'petugas') { ?>
                     <li class="nav-item">
                         <a href="http://<?= $_SERVER['SERVER_NAME'] ?>/dokumentasi/pengaduan_masyarakat/modul-tanggapan/index.php"
                             class="nav-link">

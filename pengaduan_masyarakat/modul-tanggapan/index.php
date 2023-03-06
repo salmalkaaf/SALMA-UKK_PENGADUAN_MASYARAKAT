@@ -30,7 +30,7 @@ if (isset($_POST['ubahTanggapan'])) {
     $id_tanggapan = $_POST['id_tanggapan'];
     $tgl_tanggapan = $_POST['tgl_tanggapan'];
     $tanggapan = $_POST['tanggapan'];
-    mysqli_query($conection, "UPDATE `tanggapan` SET tgl_tanggapan = '$tgl_tanggapan', tanggapan = '$tanggapan' WHERE `id_tanggapan` = '$id_tanggapan'");
+    mysqli_query($connection, "UPDATE `tanggapan` SET tgl_tanggapan = '$tgl_tanggapan', tanggapan = '$tanggapan' WHERE `id_tanggapan` = '$id_tanggapan'");
 }
 ?>
 <!DOCTYPE html>
@@ -60,6 +60,14 @@ if (isset($_POST['ubahTanggapan'])) {
 }
  
 </style>
+
+<?php @session_start();
+    if (!empty($_SESSION['username'])) { ?>
+        <!-- datatables -->
+        <link rel="stylesheet" href="../assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="../assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+        <link rel="stylesheet" href="../assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <?php } ?>
 
 <head>
     <meta charset="utf-8">
@@ -105,26 +113,9 @@ if (isset($_POST['ubahTanggapan'])) {
 
 
         <!-- MENU -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-secondary navbar-dark">
-                <a href="index.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-globe me-2"></i>SISPEMAS</h3>
-                </a>
-                <div class="d-flex align-items-center ms-4 mb-4">
-                    <div class="position-relative">
-                        <img class="rounded-circle me-lg-2" src="../assets/img/admin.jpg" alt=""
-                            style="width: 40px; height: 40px;">
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="mb-0">Jhon Doe</h6>
-                        <span>Admin</span>
-                    </div>
-                </div>
-                <?php include('../assets/menu.php') ?>
-            </nav>
-        </div>
         <!-- MENU End -->
-
+        
+        <?php include('../assets/menu.php') ?>
 
         <!-- Content Start -->
         <div class="content">
@@ -137,6 +128,9 @@ if (isset($_POST['ubahTanggapan'])) {
                     <div class="col-12">
                         <div class="bg-secondary rounded h-100 p-4">
                             <h6 class="mb-4">TANGGAPAN</h6>
+                            
+                            <button data-bs-toggle="modal" data-bs-target="#modal-lg" type="submit"
+                                class="btn btn-primary m-2"><i class="fa fa-plus"></i> Buat tanggapan</button>
 
                             <div class="modal fade" id="modal-lg">
                                 <div class="modal-dialog modal-lg">
@@ -165,6 +159,7 @@ if (isset($_POST['ubahTanggapan'])) {
                                                 <input name="id_petugas" type="text" class="form-control"
                                                     value="<?= $id_petugas ?>" readonly>
                                                 <br>
+                                                <p> </p>
                                                 <button name="tambah_tanggapan" type="submit"
                                                     class="btn btn-danger">simpan</button>
                                             </form>
@@ -173,19 +168,18 @@ if (isset($_POST['ubahTanggapan'])) {
                                 </div>
                             </div>
 
-                            <button data-bs-toggle="modal" data-bs-target="#modal-lg" type="submit"
-                                class="btn btn-primary m-2"><i class="fa fa-plus"></i> Buat tanggapan</button>
                             <div class="table-responsive">
-                                <table class="table">
+                                <table class="table" style="text-align: center"  id="dataTablesNya";>
                                     <thead>
                                         <tr>
-                                            <th scope="col">ID_Tanggapan</th>
-                                            <th scope="col">ID_Pengaduan</th>
-                                            <th scope="col">Tanggal Pengaduan</th>
-                                            <th scope="col">Tanggapan</th>
-                                            <th scope="col">ID_Petugas</th>
-                                            <th scope="col">Hapus</th>
-                                            <th scope="col">Edit</th>
+                                            <th scope="col">NO</th>
+                                            <th scope="col">ID TANGGAPAN</th>
+                                            <th scope="col">ID PENGADUAN</th>
+                                            <th scope="col">TANGGAL PENGADUAN</th>
+                                            <th scope="col">TANGGAPAN</th>
+                                            <th scope="col">ID PETUGAS</th>
+                                            <th scope="col">HAPUS</th>
+                                            <th scope="col">EDIT</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -199,6 +193,9 @@ if (isset($_POST['ubahTanggapan'])) {
                                             <tr>
                                                 <td>
                                                     <?= $no ?>
+                                                </td>
+                                                <td>
+                                                    <?= $d->id_tanggapan ?>
                                                 </td>
                                                 <td>
                                                     <?= $d->id_pengaduan ?>
@@ -222,8 +219,8 @@ if (isset($_POST['ubahTanggapan'])) {
                                                 </td>
                                                 <td>
                                                     <?php if ($_SESSION['level'] != 'masyarakat') { ?>
-                                                        <button class="btn btn-success" data-toggle="modal"
-                                                            data-target="#modal-lg<?= $d->id_pengaduan ?>"
+                                                        <button class="btn btn-success" data-bs-toggle="modal"
+                                                            data-bs-target="#modal-lg<?= $d->id_pengaduan ?>"
                                                             class="btn btn-success"><i class="fa fa-pen"></i></button>
                                                     <?php } ?>
                                                 </td>
@@ -257,7 +254,7 @@ if (isset($_POST['ubahTanggapan'])) {
                                                                     cols="30" rows="10"><?= $d->tanggapan ?></textarea>
                                                                 <br>
                                                                 <button name="ubahTanggapan" type="submit"
-                                                                    class="btn btn-info">Update</button>
+                                                                    class="btn btn-success btn-block  w-100 mb-4">Update</button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -282,20 +279,7 @@ if (isset($_POST['ubahTanggapan'])) {
 
 
             <!-- FOOTER Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-secondary rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">SISPEMAS</a>, All Right Reserved.
-                        </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
-                            <br>Distributed By: <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             <!-- FOOTER End -->
         </div>
         <!-- Content End -->
@@ -318,6 +302,43 @@ if (isset($_POST['ubahTanggapan'])) {
 
     <!-- Template Javascript -->
     <script src="../assets/js/main.js"></script>
+
+    <script src="../assets/js/main.js"></script>
+    <?php @session_start();
+    if (!empty($_SESSION['username'])) { ?>
+     <!-- DataTables  & Plugins -->
+     <script src="../assets/plugins/datatables/jquery.dataTables.min.js"></script>
+     <script src="../assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+     <script src="../assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+     <script src="../assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+     <script src="../assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+     <script src="../assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+     <script src="../assets/plugins/jszip/jszip.min.js"></script>
+     <script src="../assets/plugins/pdfmake/pdfmake.min.js"></script>
+     <script src="../assets/plugins/pdfmake/vfs_fonts.js"></script>
+     <script src="../assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+     <script src="../assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+     <script src="../assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+     <script>
+         $(function() {
+             $("#dataTablesNya").DataTable({
+                 "responsive": true,
+                 "lengthChange": false,
+                 "autoWidth": false,
+                 "buttons": ["excel", "pdf", "print"]
+             }).buttons().container().appendTo('#dataTablesNya_wrapper .col-md-6:eq(0)');
+             $('#example2').DataTable({
+                 "paging": true,
+                 "lengthChange": false,
+                 "searching": false,
+                 "ordering": true,
+                 "info": true,
+                 "autoWidth": false,
+                 "responsive": true,
+             });
+         });
+     </script>
+ <?php } ?>
 </body>
 
 </html>
